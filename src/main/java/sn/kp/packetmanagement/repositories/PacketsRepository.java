@@ -4,4 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import sn.kp.packetmanagement.domaine.Packets;
 
 public interface PacketsRepository extends JpaRepository<Packets,Long> {
+    Packets findPacketsByName(String name);
 }

@@ -19,6 +19,7 @@ import java.util.Date;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -32,7 +33,7 @@ public class PicketsRestController {
 
 
     @Test
-    public void createPicket() throws Exception {
+    public void createPacket() throws Exception {
         Packets packets = new Packets(1L,"BAG", new Date(), "My Computer BAG");
        when(packetsRepository.save(any(Packets.class))).thenReturn(packets);
         mockMvc.perform(MockMvcRequestBuilders.post("/pickets")
@@ -44,6 +45,19 @@ public class PicketsRestController {
                 .andExpect(jsonPath("$.description",is("My Computer BAG")));
 
         verify(packetsRepository,times(1)).save(any(Packets.class));
+    }
+
+    @Test
+    public void findPacketByName() throws Exception {
+        Packets packets = new Packets(1L,"BAG", new Date(), "My Computer BAG");
+        when(packetsRepository.findPacketsByName(anyString())).thenReturn(packets);
+        mockMvc.perform(get("/pickets/BAG")).
+                andExpect(status().isOk())
+                .andExpect(jsonPath("$.id",is(1)))
+                .andExpect(jsonPath("$.name",is("BAG")))
+                .andExpect(jsonPath("$.description",is("My Computer BAG")));
+
+       verify(packetsRepository,times(1)).findPacketsByName(anyString());
     }
 
 }
